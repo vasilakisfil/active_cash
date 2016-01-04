@@ -1,5 +1,6 @@
 module ActiveCash::Adapter #fix boolean and make it generic
-module_function
+  extend self
+
   def get_value(key_name)
     boolean(Redis::Value.new(key_name).value)
   end
