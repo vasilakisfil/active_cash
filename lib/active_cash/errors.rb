@@ -6,3 +6,6 @@ end
 
 class UnknownCacheTypeError < ActiveCashError
 end
+
+class FindByOptionsMismatchError < ActiveCashError
+end

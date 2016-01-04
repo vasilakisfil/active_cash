@@ -13,7 +13,7 @@ module ActiveCash
   end
   module ClassMethods
     def caches(type, opts = {})
-      name = opts[:name] || type.to_sym
+      name = opts[:name] || opts[:as] || type.to_sym
       @cache_opts = Utils.build_cache_opts(type, opts, @cache_opts, self.to_s)
       Utils.set_callbacks(self, @cache_opts[name])
       Utils.create_methods(self, @cache_opts[name])
