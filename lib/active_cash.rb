@@ -1,4 +1,5 @@
 require 'active_cash/version'
+require_relative 'active_cash/errors'
 require_relative 'active_cash/adapter'
 require_relative 'active_cash/cache'
 require_relative 'active_cash/utils'
@@ -9,12 +10,11 @@ module ActiveCash
   end
   module ClassMethods
     def caches(type, opts = {})
-      #add metaprogramming to eliminate hard codes
       #add procs/lambdas for better finds
-      raise 'Unknown cache type' unless type.to_sym == :existence
+      Utils.raise_unknown_cache_type(type) unless type.to_sym == :existence
       @cache_opts ||= {}
-      name = opts[:name] || opts[:type]
-      raise "#{name} cache already exists" unless cache_opts[name].nil?
+      name = opts[:name] || type.to_sym
+      Utils.raise_redefined_cache_error(name) unless cache_opts[name].nil?
       @cache_opts[name] = {}
       @cache_opts[name][:name] = name
       @cache_opts[name][:type] = type.to_sym
@@ -24,20 +24,11 @@ module ActiveCash
       @cache_opts[name][:klass] = self.to_s
 
       Utils.set_callbacks(self, @cache_opts[name])
+      Utils.create_methods(self, @cache_opts[name])
     end
 
     def cache_opts
       @cache_opts
-    end
-
-    def cached_existence_by(user_id:, video_id:) #fix that
-      method_name = __method__.to_s.gsub(':', '').gsub('cached_','').gsub('_by','')
-
-      return Cache.exists?(
-        find_by: {user_id: user_id, video_id: video_id},
-        method_name: method_name,
-        klass: 'Like'
-      )
     end
   end
 end
