@@ -57,7 +57,7 @@ describe ActiveCash do
       @like = FactoryGirl.create(:empty_like)
     end
 
-    adapter("sets to true",
+    adapter("just gets, no set since get failed",
       get_times: 1,
     )
 
@@ -69,7 +69,7 @@ describe ActiveCash do
         )
       end
 
-      adapter("just gets since it exists",
+      adapter("gets and then sets",
         get_times: 1,
         set_times: 1, set_value: true,
       )
@@ -92,7 +92,7 @@ describe ActiveCash do
             )
           end
 
-          adapter("sets to true",
+          adapter("just gets, no set since get failed",
             get_times: 1,
           )
         end
