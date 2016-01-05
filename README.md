@@ -30,7 +30,7 @@ class Like < ActiveRecord::Base
 
          # type      # matched conditions                     # cache name (default is strategy name)
   caches :existence, find_by: [:user_id, :video_id]
-  caches :existence, find_by: [:user_id, :video_id, :hidden], name: :hidden
+  caches :existence, find_by: [:user_id, :video_id, :hidden], as: :hidden #also name: :hidden is supported
 end
 
 # Check if Like exists for specific :user_id, :video_id.
@@ -72,11 +72,29 @@ end
 
 Now cache will be created and updated ONLY IF there is a reference to Redis.
 
+You can also specify the return value (the symbol must be a method defined in the class instance):
+``` ruby
+class Like < ActiveRecord::Base
+  include ActiveCash
+
+  caches :existence, find_by: [:user_id, :video_id, :state], as: :state, returns: :state
+end
+
+# Check if Like exists for specific :user_id, :video_id.
+# returns the state
+# returns false if state.nil?
+@like = Like.cached_existence_by(user_id: 1, video_id: 2)
+```
+
+Not though that cache will return false if state is nil.
+
+
 ## Todo
 Only existence strategy is supported at the moment but the code is designed to
 support other kind of caching strategies as well, like caching the whole object
 or some parts of it. Also:
 
+* Refactor a bit :(
 * We should provide named callbacks
 * It's super easy to extend for Mongoid
 * Add memcached adapter

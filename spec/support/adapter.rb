@@ -25,6 +25,14 @@ module ActiveCash::TestAdapter #fix boolean and make it generic
     return ActiveCash::Adapter.boolean(value)
   end
 
+  def set_value_with_return(key_name, exists, returns)
+    if exists
+      returns.nil? ? set_value(key_name, true) : set_value(key_name, returns)
+    else
+      set_value(key_name, false)
+    end
+  end
+
   def spy_object
   end
 end

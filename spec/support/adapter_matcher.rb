@@ -13,6 +13,10 @@ module Rspec
         msg ||= 'no message provided'
 
         it "adapter #{msg}" do
+          unless [nil, false, true].include? opts[:set_value]
+            opts[:set_value] = eval(opts[:set_value])
+          end
+
           expect(@adapter).to(
             have_received(:get_value).with(anything()).exactly(opts[:get_times]).times
           )
