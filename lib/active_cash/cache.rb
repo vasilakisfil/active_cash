@@ -39,7 +39,7 @@ module ActiveCash::Cache
     changes = OpenStruct.new(instance.previous_changes)
     return true if changes.send(returns) != nil
 
-    find_by.keys.each_with_index do |key, i|
+    (find_by.is_a?(Array) ? find_by : find_by.keys).each_with_index do |key, i|
       if changes.send(key) != nil
         return true
       end
